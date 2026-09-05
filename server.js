@@ -10,9 +10,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de Mercado Pago con tu Access Token del .env
+const accessToken = (process.env.MP_ACCESS_TOKEN || '').trim();
+
+console.log('--- Verificación de Inicio ---');
+console.log('Access Token detectado:', accessToken ? `${accessToken.substring(0, 15)}...` : 'NO CONFIGURADO');
+
 const client = new MercadoPagoConfig({ 
-  accessToken: process.env.MP_ACCESS_TOKEN || '' 
+  accessToken: accessToken 
 });
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,41 +26,44 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Endpoint para crear la preferencia de pago desde el carrito
 app.post('/api/create-preference', async (req, res) => {
+  console.log('>> Solicitud recibida en /api/create-preference');
+
   try {
     const { items } = req.body;
 
     if (!items || items.length === 0) {
-      return res.status(400).json({ error: 'El carrito no contiene productos' });
+      return res.status(400).json({ error: 'El carrito está vacío' });
     }
 
-    // Mapear los cursos del carrito al formato que pide Mercado Pago
+    // Mercado Pago Argentina requiere montos en ARS que superen el mínimo operativo
     const preferenceItems = items.map((item) => ({
-      title: item.title,
-      unit_price: Number(item.price),
+      id: 'curso-' + Math.floor(Math.random() * 1000),
+      title: String(item.title),
+      unit_price: Number(item.price) < 100 ? Number(item.price) * 1000 : Number(item.price),
       quantity: 1,
-      currency_id: 'ARS' // Cambiar a la moneda de tu cuenta (ARS, USD, etc.)
+      currency_id: 'ARS'
     }));
 
+    console.log('Items enviados a MP:', preferenceItems);
+
     const preference = new Preference(client);
-    const result = await preference.create({
+    const response = await preference.create({
       body: {
-        items: preferenceItems,
-        back_urls: {
-          success: `http://localhost:${PORT}/?status=success`,
-          failure: `http://localhost:${PORT}/?status=failure`,
-          pending: `http://localhost:${PORT}/?status=pending`
-        },
-        auto_return: 'approved'
+        items: preferenceItems
       }
     });
 
-    // Devolvemos el enlace oficial de pago generado
-    res.json({ init_point: result.init_point });
+    console.log('Preferencia creada correctamente:', response.id);
+    return res.json({ init_point: response.init_point });
   } catch (error) {
-    console.error('Error al crear preferencia en Mercado Pago:', error);
-    res.status(500).json({ error: 'Hubo un error al generar el cobro' });
+    console.error('--- FALLO DE MERCADO PAGO ---');
+    console.error(JSON.stringify(error, null, 2));
+    
+    return res.status(500).json({ 
+      error: 'Error al comunicarse con Mercado Pago',
+      details: error.message || error
+    });
   }
 });
 
