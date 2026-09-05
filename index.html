@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mattematika | Cursos y Clases Online de Matemáticas</title>
+  
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Hoja de Estilos Externa -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container topbar-container">
+      <div>🚀 Comunidad oficial de <strong>Mattematika</strong> en redes</div>
+      <div class="topbar-socials">
+        <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+        <a href="#"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Menú -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon">M</div>
+        <div class="brand-text">Matte<span>matika</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#cursos">Cursos Grabados</a></li>
+        <li><a href="#clases">Clases 1 a 1</a></li>
+        <li><a href="#metodo">Metodología</a></li>
+        <li><a href="#comunidad">Comunidad</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="cart-btn" id="openCartBtn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
+        <a href="#cursos" class="btn-primary">Ver Cursos</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-badge">
+          <i class="fas fa-calculator"></i> Aprende sin vueltas ni confusión
+        </div>
+        <h1 class="hero-title">
+          Domina las Matemáticas de forma <span>clara y visual</span>.
+        </h1>
+        <p class="hero-desc">
+          Desde las propiedades fundamentales de las operaciones hasta álgebra y cálculo. Cursos paso a paso y clases personalizadas para que apruebes con confianza.
+        </p>
+        <div class="hero-buttons">
+          <a href="#cursos" class="btn-primary">
+            <i class="fas fa-graduation-cap"></i> Explorar Catálogo
+          </a>
+          <a href="#clases" class="btn-secondary">
+            <i class="fas fa-calendar-check"></i> Reservar Clase en Vivo
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="video-mock">
+          <div class="video-play-btn" id="playDemoBtn">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+        <div class="floating-badge">
+          <div class="badge-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <div class="badge-title">Clases Directas</div>
+            <div class="badge-subtitle">Pizarra en mano y ejercicios resueltos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra de Estadísticas -->
+  <section class="stats-section">
+    <div class="container stats-grid">
+      <div>
+        <div class="stat-number">+100K</div>
+        <div class="stat-label">Seguidores en Redes</div>
+      </div>
+      <div>
+        <div class="stat-number">+900</div>
+        <div class="stat-label">Suscriptores YouTube</div>
+      </div>
+      <div>
+        <div class="stat-number">+50</div>
+        <div class="stat-label">Horas de Lecciones Claras</div>
+      </div>
+      <div>
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Resolución Paso a Paso</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catálogo de Cursos -->
+  <section id="cursos" class="container">
+    <div class="section-header">
+      <span class="section-tag">Formación Online</span>
+      <h2 class="section-title">Cursos Grabados con Acceso Inmediato</h2>
+      <p class="section-desc">Cursos modulares organizados por temas para que avances a tu propio ritmo con ejercicios prácticos y explicaciones directas.</p>
+    </div>
+
+    <div class="course-grid">
+      <!-- Curso 1 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <div class="course-formula">(a + b) + c</div>
+          <span class="course-badge">Fundamentos</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span><i class="far fa-clock"></i> 4 Horas</span>
+            <span><i class="fas fa-video"></i> 18 Lecciones</span>
+          </div>
+          <h3 class="course-title">Propiedades de las Operaciones Matemáticas</h3>
+          <p class="course-desc">Aprende a dominar las propiedades asociativa, conmutativa y distributiva de la suma y multiplicación sin memorizar fórmulas vacías.</p>
+          <div class="course-footer">
+            <div class="course-price">$19 <span>$29</span></div>
+            <button class="btn-primary add-to-cart" data-title="Propiedades de las Operaciones" data-price="19">
+              <i class="fas fa-cart-plus"></i> Añadir
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curso 2 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <div class="course-formula">2x + 5 = 15</div>
+          <span class="course-badge">Más Popular</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span><i class="far fa-clock"></i> 8 Horas</span>
+            <span><i class="fas fa-video"></i> 32 Lecciones</span>
+          </div>
+          <h3 class="course-title">Álgebra Práctica: De Cero a Ecuaciones Complejas</h3>
+          <p class="course-desc">El método paso a paso para despejar incógnitas, factorizar polinomios y resolver sistemas de ecuaciones lineales sin complicaciones.</p>
+          <div class="course-footer">
+            <div class="course-price">$29 <span>$45</span></div>
+            <button class="btn-primary add-to-cart" data-title="Álgebra Práctica" data-price="29">
+              <i class="fas fa-cart-plus"></i> Añadir
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curso 3 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <div class="course-formula">lim f(x) → ∞</div>
+          <span class="course-badge">Avanzado</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span><i class="far fa-clock"></i> 12 Horas</span>
+            <span><i class="fas fa-video"></i> 45 Lecciones</span>
+          </div>
+          <h3 class="course-title">Preparación para Ingreso Universitario y Cálculo</h3>
+          <p class="course-desc">Funciones, límites, derivadas e integrales explicadas con ejemplos reales y exámenes resueltos en pizarra.</p>
+          <div class="course-footer">
+            <div class="course-price">$39 <span>$59</span></div>
+            <button class="btn-primary add-to-cart" data-title="Preparación Ingreso y Cálculo" data-price="39">
+              <i class="fas fa-cart-plus"></i> Añadir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Módulo de Reserva 1 a 1 -->
+  <section id="clases" class="container">
+    <div class="booking-section">
+      <div class="booking-grid">
+        <div>
+          <span class="section-tag">Atención Personalizada</span>
+          <h2 class="section-title">¿Necesitas preparar un examen urgente?</h2>
+          <p class="section-desc">Agenda una clase particular online 1 a 1 por Google Meet o Zoom para resolver dudas específicas sobre tu temario escolar o universitario.</p>
+          <ul class="booking-list">
+            <li><i class="fas fa-check-circle"></i> Sesión privada de 60 minutos con pizarra interactiva.</li>
+            <li><i class="fas fa-check-circle"></i> Envías tus ejercicios antes de la clase para optimizar el tiempo.</li>
+            <li><i class="fas fa-check-circle"></i> Grabación en HD de la clase para repasar cuando quieras.</li>
+          </ul>
+        </div>
+
+        <div class="booking-form">
+          <h3 class="form-heading">Reserva tu Sesión Online</h3>
+          <form id="bookingForm">
+            <div class="form-group">
+              <label>Tu Nombre Completo</label>
+              <input type="text" class="form-control" placeholder="Ej: Lucas Martínez" required>
+            </div>
+            <div class="form-group">
+              <label>Correo Electrónico</label>
+              <input type="email" class="form-control" placeholder="tu@correo.com" required>
+            </div>
+            <div class="form-group">
+              <label>Tema o Materia a Consultar</label>
+              <input type="text" class="form-control" placeholder="Ej: Examen de Álgebra / Límites" required>
+            </div>
+            <div class="form-group">
+              <label>Fecha sugerida</label>
+              <input type="date" class="form-control" required>
+            </div>
+            <button type="submit" class="btn-primary form-submit-btn">
+              Agendar Clase ($25 USD)
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal del Carrito -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="cart-drawer">
+      <div class="cart-header">
+        <h3 class="cart-title">Tu Carrito de Cursos</h3>
+        <button id="closeCartBtn" class="cart-close-btn">&times;</button>
+      </div>
+      <div id="cartItemsList">
+        <p class="cart-empty-text">El carrito está vacío.</p>
+      </div>
+      <div class="cart-total-row">
+        <span>Total:</span>
+        <span id="cartTotalValue">$0 USD</span>
+      </div>
+      <button class="btn-primary checkout-btn" id="checkoutBtn">
+        <i class="fas fa-lock"></i> Finalizar Compra Segura
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div class="brand-text footer-brand">Matte<span>matika</span></div>
+        <p class="footer-desc">
+          La academia digital para aprender matemáticas de forma sencilla, visual y sin estrés. Clases grabadas, material descargable y tutorías personalizadas.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Cursos</h4>
+        <ul class="footer-links">
+          <li><a href="#cursos">Propiedades Numéricas</a></li>
+          <li><a href="#cursos">Álgebra y Ecuaciones</a></li>
+          <li><a href="#cursos">Cálculo Diferencial</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Enlaces</h4>
+        <ul class="footer-links">
+          <li><a href="#clases">Clases en Vivo</a></li>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#">Términos y Condiciones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pagos Aceptados</h4>
+        <p class="footer-payment-text">Cobros locales e internacionales seguros:</p>
+        <div class="payment-icons">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-paypal"></i>
+          <i class="fas fa-credit-card"></i>
+        </div>
+      </div>
+    </div>
+    <div class="container copyright">
+      &copy; 2026 Mattematika. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- Script Externo -->
+  <script src="script.js"></script>
+</body>
+</html>
