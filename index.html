@@ -15,6 +15,9 @@
   
   <!-- Hoja de Estilos Externa -->
   <link rel="stylesheet" href="styles.css">
+
+  <!-- SDK Oficial de PayPal (Modo Sandbox / Prueba) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 </head>
 <body>
 
@@ -241,23 +244,43 @@
     </div>
   </section>
 
-  <!-- Modal del Carrito -->
+  <!-- Modal del Carrito con Selección de Método de Pago -->
   <div class="modal-overlay" id="cartModal">
-    <div class="cart-drawer">
+    <div class="cart-drawer" style="max-width: 440px; width: 100%; display: flex; flex-direction: column;">
       <div class="cart-header">
         <h3 class="cart-title">Tu Carrito de Cursos</h3>
         <button id="closeCartBtn" class="cart-close-btn">&times;</button>
       </div>
-      <div id="cartItemsList">
+
+      <!-- Lista de Cursos -->
+      <div id="cartItemsList" style="flex: 1; overflow-y: auto;">
         <p class="cart-empty-text">El carrito está vacío.</p>
       </div>
+
       <div class="cart-total-row">
-        <span>Total:</span>
+        <span>Total a Pagar:</span>
         <span id="cartTotalValue">$0 USD</span>
       </div>
-      <button class="btn-primary checkout-btn" id="checkoutBtn">
-        <i class="fas fa-lock"></i> Finalizar Compra Segura
-      </button>
+
+      <!-- Formulario de Datos del Alumno antes de Pagar -->
+      <div id="checkoutDetails" style="margin-top: 18px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">
+          Correo del alumno (donde recibirás el acceso):
+        </label>
+        <input type="email" id="buyerEmail" placeholder="ejemplo@correo.com" required style="width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; font-family: inherit;">
+
+        <span style="display: block; font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 10px;">
+          Selecciona tu método de pago:
+        </span>
+
+        <!-- Opción 1: Mercado Pago -->
+        <button class="btn-primary checkout-btn" id="checkoutBtnMP" style="background: #009ee3; border-color: #009ee3; width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; padding: 12px; font-weight: 600;">
+          <i class="fas fa-credit-card"></i> Pagar con Mercado Pago (Local)
+        </button>
+
+        <!-- Opción 2: PayPal y Tarjetas Internacionales -->
+        <div id="paypal-button-container" style="margin-top: 4px;"></div>
+      </div>
     </div>
   </div>
 

@@ -1,133 +1,150 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import WebSocket from 'ws';
-import { fileURLToPath } from 'url';
-import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
-import { createClient } from '@supabase/supabase-js';
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+const { MercadoPagoConfig, Preference } = require('mercadopago');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración Mercado Pago
-const mpToken = (process.env.MP_ACCESS_TOKEN || '').trim();
-const mpClient = new MercadoPagoConfig({ accessToken: mpToken });
-
-// Configuración Supabase protegida
-const supabaseUrl = (process.env.SUPABASE_URL || 'https://ltijkypogezylmoiqtzw.supabase.co').trim();
-const supabaseKey = (process.env.SUPABASE_ANON_KEY || '').trim();
-
-let supabase = null;
-try {
-  supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: { persistSession: false },
-    realtime: { transport: WebSocket }
-  });
-  console.log('Cliente Supabase conectado exitosamente.');
-} catch (err) {
-  console.error('Error al instanciar Supabase:', err.message);
-}
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// Middlewares base
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Endpoint: Crear Orden / Preferencia
+// Configuración Mercado Pago
+const mpToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-783580970846462-090413-8294dc7e75978397d0e82605964497ab-2423317569').trim();
+const mpClient = new MercadoPagoConfig({ accessToken: mpToken });
+
+// Configuración Supabase REST
+const SUPABASE_URL = (process.env.SUPABASE_URL || 'https://ltijkypogezylmoiqtzw.supabase.co').trim();
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0aWpreXBvZ2V6eWxtb2lxdHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwMDg5MjUsImV4cCI6MjEwNDU4NDkyNX0.k9hN--PilkP5s8yTeDzZ4RGUDgZrA3x3ICAAPa3zNzY';
+
+async function registrarCompraEnSupabase(datos) {
+  const url = `${SUPABASE_URL}/rest/v1/compras`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(datos)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Error insertando en Supabase REST:', errorText);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 1. ENDPOINTS MERCADO PAGO
+// -----------------------------------------------------------------------------
 app.post('/api/create-preference', async (req, res) => {
   try {
-    const { items } = req.body;
+    const { items, payer_email } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'El carrito está vacío' });
     }
 
-    const preferenceItems = items.map((item) => ({
-      id: item.id || 'curso-1',
-      title: String(item.title),
-      unit_price: Number(item.price) < 100 ? Number(item.price) * 1000 : Number(item.price),
+    const TASA_CAMBIO_ARS = 1250;
+
+    const preferenceItems = items.map(item => ({
+      id: item.id,
+      title: item.title,
       quantity: 1,
+      unit_price: Math.round(Number(item.price) * TASA_CAMBIO_ARS),
       currency_id: 'ARS'
     }));
+
+    // Prevenir conflicto si el comprador usa el mismo correo titular de la cuenta MP
+    const safePayerEmail = (payer_email && !payer_email.includes('zizu'))
+      ? payer_email
+      : 'comprador_demo@mattematika.com';
 
     const preference = new Preference(mpClient);
     const response = await preference.create({
       body: {
         items: preferenceItems,
-        notification_url: `${process.env.APP_URL || 'http://localhost:3000'}/api/webhooks`
+        payer: {
+          email: safePayerEmail
+        },
+        metadata: {
+          payer_email: payer_email,
+          item_ids: items.map(i => i.id).join(',')
+        },
+        back_urls: {
+          success: `${req.headers.origin || 'http://localhost:3000'}/aula-virtual.html`,
+          failure: `${req.headers.origin || 'http://localhost:3000'}/#cursos`,
+          pending: `${req.headers.origin || 'http://localhost:3000'}/aula-virtual.html`
+        }
       }
     });
 
-    return res.json({ init_point: response.init_point });
+    res.json({ init_point: response.init_point });
   } catch (error) {
-    console.error('Error al crear preferencia en MP:', error);
-    return res.status(500).json({ error: 'Error interno en Mercado Pago' });
+    console.error('--- DETALLE ERROR MERCADO PAGO ---');
+    console.error(error.message || error);
+    if (error.cause) console.error('Causa:', JSON.stringify(error.cause, null, 2));
+    console.error('-----------------------------------');
+    res.status(500).json({ error: 'Error al generar checkout de Mercado Pago' });
   }
 });
 
-// Endpoint: Webhook de Mercado Pago
-app.post('/api/webhooks', async (req, res) => {
-  const { type, data } = req.body;
-
+// -----------------------------------------------------------------------------
+// 2. ENDPOINTS PAYPAL
+// -----------------------------------------------------------------------------
+app.post('/api/paypal/capture-order', async (req, res) => {
   try {
-    if (type === 'payment' || req.query.type === 'payment') {
-      const paymentId = data?.id || req.query['data.id'];
+    const { orderID, payerEmail, items } = req.body;
 
-      if (paymentId) {
-        const paymentInstance = new Payment(mpClient);
-        const payment = await paymentInstance.get({ id: paymentId });
-
-        console.log(`Webhook: Pago recibido #${payment.id} [${payment.status}]`);
-
-        if (payment.status === 'approved' && supabase) {
-          const payerEmail = payment.payer?.email || 'alumno@mattematika.com';
-          const monto = payment.transaction_amount;
-          const itemId = payment.additional_info?.items?.[0]?.id || 'curso-1';
-
-          await supabase
-            .from('usuarios')
-            .upsert({ email: payerEmail }, { onConflict: 'email' });
-
-          const { error: errorCompra } = await supabase
-            .from('compras')
-            .insert({
-              payment_id: String(payment.id),
-              status: payment.status,
-              monto: monto,
-              payer_email: payerEmail,
-              item_id: itemId
-            });
-
-          if (errorCompra) {
-            console.error('Error Supabase:', errorCompra);
-          } else {
-            console.log(`Compra registrada para: ${payerEmail}`);
-          }
-        }
-      }
+    if (!payerEmail || !items || items.length === 0) {
+      return res.status(400).json({ error: 'Datos incompletos para procesar compra' });
     }
 
-    return res.sendStatus(200);
+    console.log(`Procesando orden PayPal ${orderID} para ${payerEmail}`);
+
+    for (const item of items) {
+      await registrarCompraEnSupabase({
+        payment_id: String(orderID),
+        status: 'approved',
+        monto: Number(item.price),
+        payer_email: payerEmail.toLowerCase().trim(),
+        item_id: item.id
+      });
+    }
+
+    res.json({ status: 'COMPLETED', message: 'Cursos activados con éxito' });
   } catch (error) {
-    console.error('Error procesando webhook:', error);
-    return res.sendStatus(500);
+    console.error('Error capturando orden PayPal:', error);
+    res.status(500).json({ error: 'Error registrando compra en base de datos' });
   }
 });
 
-// Endpoint de comprobación
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'Servidor Mattematika activo',
-    supabaseConectado: !!supabase
-  });
+// -----------------------------------------------------------------------------
+// 3. WEBHOOK MERCADO PAGO
+// -----------------------------------------------------------------------------
+app.post('/api/webhook', async (req, res) => {
+  const { query } = req;
+  const topic = query.topic || query.type;
+
+  try {
+    if (topic === 'payment') {
+      const paymentId = query.id || query['data.id'];
+      console.log('Notificación de pago recibida ID:', paymentId);
+    }
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error webhook:', error);
+    res.sendStatus(500);
+  }
 });
 
+// Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en: http://localhost:${PORT}`);
+  console.log(`🚀 Servidor Mattematika activo en http://localhost:${PORT}`);
 });
