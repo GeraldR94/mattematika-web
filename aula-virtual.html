@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula Virtual | Mattematika</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="background-color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; min-height: 100vh;">
+
+  <!-- Header Aula -->
+  <header style="background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.3rem; color: #0f172a;">
+      <span style="background: #2563eb; color: #fff; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1rem;">M</span>
+      Matte<span style="color: #2563eb;">matika</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span id="user-email" style="font-size: 14px; font-weight: 500; color: #475569;">Cargando usuario...</span>
+      <button id="btn-logout" style="background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main style="max-width: 1050px; margin: 40px auto; padding: 0 20px;">
+    <div style="margin-bottom: 30px;">
+      <h1 style="color: #0f172a; font-size: 2rem; margin: 0 0 8px 0;">Mi Aula Virtual</h1>
+      <p style="color: #64748b; margin: 0; font-size: 1rem;">Acceso directo a tus cursos y sesiones adquiridas.</p>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div id="loading-courses" style="text-align: center; padding: 60px; color: #64748b; font-size: 1.1rem;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #2563eb; margin-bottom: 12px; display: block;"></i>
+      Consultando tus accesos activos...
+    </div>
+
+    <!-- Cuadrícula de Cursos Activos -->
+    <div id="courses-grid" style="display: none; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+    </div>
+
+    <!-- Mensaje si aún no tiene compras -->
+    <div id="no-courses" style="display: none; background: #ffffff; padding: 48px; border-radius: 16px; text-align: center; border: 2px dashed #cbd5e1; max-width: 500px; margin: 0 auto;">
+      <i class="fas fa-book-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 16px; display: block;"></i>
+      <h3 style="margin: 0 0 8px 0; color: #1e293b;">Aún no tienes cursos activos</h3>
+      <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin-bottom: 24px;">Cuando adquieras lecciones o tutorías con este correo, aparecerán automáticamente en esta sección.</p>
+      <a href="/#cursos" style="background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
+        Ver Cursos Disponibles
+      </a>
+    </div>
+  </main>
+
+  <script src="aula-virtual.js"></script>
+</body>
+</html>

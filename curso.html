@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visor de Lección | Mattematika</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .top-header {
+      background: #1e293b;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+    .main-layout {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 65px);
+    }
+    .video-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #020617;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .sidebar {
+      width: 380px;
+      background: #1e293b;
+      border-left: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #334155;
+    }
+    .lesson-list {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lesson-item {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #283548;
+      transition: background 0.2s;
+    }
+    .lesson-item:hover {
+      background: #273549;
+    }
+    .lesson-item.active {
+      background: #2563eb;
+      color: #fff;
+    }
+    .lesson-icon {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación del curso -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="/aula-virtual.html" style="color: #94a3b8; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-arrow-left"></i> Volver a Mi Aula
+      </a>
+      <span style="color: #475569;">|</span>
+      <strong id="course-title" style="font-size: 15px; color: #e2e8f0;">Cargando temario...</strong>
+    </div>
+    <span id="lesson-progress" style="font-size: 13px; color: #94a3b8;">Progreso de aprendizaje</span>
+  </header>
+
+  <!-- Visor + Temario -->
+  <div class="main-layout">
+    
+    <!-- Zona del Reproductor -->
+    <main class="video-area">
+      <div class="video-wrapper">
+        <iframe id="video-frame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div style="margin-top: 24px;">
+        <h2 id="current-lesson-title" style="margin: 0 0 10px 0; font-size: 1.4rem;">Selecciona una lección</h2>
+        <p id="current-lesson-desc" style="color: #94a3b8; margin: 0; line-height: 1.6; font-size: 0.95rem;">
+          Bienvenido al visor de contenido de Mattematika.
+        </p>
+      </div>
+    </main>
+
+    <!-- Barra lateral con Temario -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h4 style="margin: 0 0 6px 0; font-size: 1.05rem;">Módulos del Curso</h4>
+        <span style="font-size: 12px; color: #94a3b8;">Haz clic en una clase para reproducir</span>
+      </div>
+      <ul class="lesson-list" id="lessons-container">
+        <!-- Se inyectan dinámicamente -->
+      </ul>
+    </aside>
+
+  </div>
+
+  <script src="curso.js"></script>
+</body>
+</html>
